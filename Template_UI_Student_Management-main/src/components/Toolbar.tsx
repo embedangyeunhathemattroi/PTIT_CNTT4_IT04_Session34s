@@ -1,17 +1,23 @@
 import { Button, TextField } from "@mui/material";
-
 import React from "react";
 
 interface ToolbarProps {
   onSearch: (keyword: string) => void;
+  onSort: () => void; // thêm prop sắp xếp
   isShow: (key: string) => void;
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({ onSearch,isShow }) => {
+const Toolbar: React.FC<ToolbarProps> = ({ onSearch, onSort, isShow }) => {
   const [keyword, setKeyword] = React.useState("");
+
   const handleClick = () => {
-    isShow("ON")
+    isShow("ON");
   };
+
+  const handleSearch = () => {
+    onSearch(keyword);
+  };
+
   return (
     <div className="flex justify-between mb-4">
       <Button variant="contained" color="primary" onClick={handleClick}>
@@ -23,11 +29,16 @@ const Toolbar: React.FC<ToolbarProps> = ({ onSearch,isShow }) => {
           placeholder="Search Here"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSearch();
+          }}
         />
-        <Button variant="contained" onClick={() => onSearch(keyword)}>
+        <Button variant="contained" onClick={handleSearch}>
           Tìm kiếm
         </Button>
-        <Button variant="outlined">Sắp xếp</Button>
+        <Button variant="outlined" onClick={onSort}>
+          Sắp xếp
+        </Button>
       </div>
     </div>
   );
