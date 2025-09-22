@@ -6,16 +6,20 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-} from '@mui/material';
+} from "@mui/material";
 
-import React from 'react';
-import type { Student } from '../utils/types';
+import React from "react";
+import type { Student } from "../utils/types";
+import { useDispatch } from "react-redux";
 
 interface StudentListProps {
   students: Student[];
+  onEdit: (student: Student) => void; // thêm prop onEdit
 }
 
-const StudentList: React.FC<StudentListProps> = ({ students }) => {
+const StudentList: React.FC<StudentListProps> = ({ students, onEdit }) => {
+  const dispatch = useDispatch();
+
   return (
     <TableContainer>
       <Table>
@@ -30,32 +34,48 @@ const StudentList: React.FC<StudentListProps> = ({ students }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {students.map((s, i) => (
-            <TableRow key={s.id}>
-              <TableCell>{i + 1}</TableCell>
-              <TableCell>{s.id}</TableCell>
-              <TableCell>{s.name}</TableCell>
-              <TableCell>{s.age}</TableCell>
-              <TableCell>{s.gender}</TableCell>
-              <TableCell>
-                <div className="flex gap-2">
-                  <Button variant="contained" color="error">
-                    Xem
-                  </Button>
-                  <Button variant="contained" color="warning">
-                    Sửa
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="success"
-                    onClick={() => confirm('Bạn có chắc chắn muốn xóa không')}
-                  >
-                    Xóa
-                  </Button>
-                </div>
+          {students.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={6} align="center">
+                Không có sinh viên nào được tìm thấy
               </TableCell>
             </TableRow>
-          ))}
+          ) : (
+            students.map((s, i) => (
+              <TableRow key={s.id}>
+                <TableCell>{i + 1}</TableCell>
+                <TableCell>{s.id}</TableCell>
+                <TableCell>{s.name}</TableCell>
+                <TableCell>{s.age}</TableCell>
+                <TableCell>{s.gender}</TableCell>
+                <TableCell>
+                  <div className="flex gap-2">
+                    <Button variant="contained" color="error">
+                      Xem
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="warning"
+                      onClick={() => onEdit(s)}
+                    >
+                      Sửa
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      onClick={() => {
+                        if (confirm("Bạn có chắc chắn muốn xóa không?")) {
+                          dispatch({ type: "DELETE", payload: s.id });
+                        }
+                      }}
+                    >
+                      Xóa
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </TableContainer>
