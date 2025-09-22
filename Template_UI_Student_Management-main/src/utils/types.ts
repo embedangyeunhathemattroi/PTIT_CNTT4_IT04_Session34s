@@ -7,3 +7,8 @@ export interface Student {
   hometown?: string;
   address?: string;
 }
+
+export interface Action {
+  type:string,
+  payload:any
+}
